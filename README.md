@@ -1,4 +1,4 @@
-# small_sheep_credit_mgr
+# totoro_back_manager
 
 > A Vue.js project
 
