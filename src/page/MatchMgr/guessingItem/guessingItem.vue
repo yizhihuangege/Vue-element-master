@@ -71,6 +71,7 @@
 
 <script>
   import guessingItemEditor from "../guessingItem/child/guessingEditor";
+  import { tableConfig} from '../../../config/defaultData';
 
   export default {
     name: "guessingItem",
@@ -81,7 +82,7 @@
       return {
         path:["比赛管理","比赛列表","竞猜项"],      // force-path
         isLoad: false,
-        tableBody,
+        tableBody:tableConfig(tableHeader),
         matchId: "",
         dialogTitle:"",
         dialogVisible:false,  // 子组件可见性
@@ -173,28 +174,20 @@
     },
     
   }
-  const tableHeader = [
-    { prop: "id", label: "ID" },
-    { prop: "item_name", label: "竞猜名称" },
-    { prop: "status", label: "状态" },
-    { prop: "item_1", label: "投注项" },
-    { prop: "amount_1", label: "投注额" },
-    { prop: "odds_1", label: "赔率" },
-    { prop: "number_1", label: "投注人数" },
-    { prop: "result", label: "结果" },
-    { prop: "start_time", label: "开始时间" },
-    { prop: "rake", label: "抽成" },
-    { prop: "wjdd", label: "玩家订单" },
-  ]
+const tableHeader = [
+  { prop: "id", label: "ID" },
+  { prop: "item_name", label: "竞猜名称" },
+  { prop: "status", label: "状态" },
+  { prop: "item_1", label: "投注项" },
+  { prop: "amount_1", label: "投注额" },
+  { prop: "odds_1", label: "赔率" },
+  { prop: "number_1", label: "投注人数" },
+  { prop: "result", label: "结果" },
+  { prop: "start_time", label: "开始时间" },
+  { prop: "rake", label: "抽成" },
+  { prop: "wjdd", label: "玩家订单" },
+];
 
-  const tableBody = {
-    isLoad: true,
-    header: tableHeader,
-    data: [],
-    curPage: 1, // 当前页数
-    pageSize: 20, // 页大小
-    countTotal: 0 // 数据总条数
-  }
 </script>
 
 <style scoped>

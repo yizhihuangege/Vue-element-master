@@ -4,13 +4,12 @@ import router from './router'
 
 import usePlugin from './plugin/index.js';
 
-import './style/reset.css';
-import './style/layout.css';
+import "./assets/js/passiveSupported"     // Chrome让页面滑动更加流畅的新特性
+import './assets/style/public.css'
 
+Vue.config.productionTip = false;
 
-Vue.config.productionTip = false
-
-usePlugin();
+usePlugin()
 
 new Vue({
   el: '#app',

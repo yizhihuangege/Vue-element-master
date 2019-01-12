@@ -4,23 +4,18 @@
       <auto-bread-crumb></auto-bread-crumb>
     </el-header>
     <el-main>
-      <el-row>
-          <el-col :span="2">
-            <div style="line-height:40px;text-align:right">验证查询：</div>
-          </el-col>
+      <el-row :gutter="20">
           <el-col :span="4">
             <el-input type="text" placeholder="请输入用户ID或用户手机号" v-model="queryParams.title" clearable></el-input>
           </el-col>
-          <el-col :span="2" style="margin-left:20px">
+          <el-col :span="2">
               <el-button @click="search" type="primary" icon="el-icon-search">查询</el-button>
           </el-col>
       </el-row>
-
-
       <el-table :data="tableBody.data" v-loading="tableBody.isLoad">
         <el-table-column v-for="item of tableBody.header" :key="item.id" :label="item.label" :prop="item.prop">
           <template slot-scope="scope">
-            <span v-if="item.prop=='status'">
+            <span v-if="item.prop==='status'">
               <el-button type="text" v-if="scope.row.status===1" disabled>审核通过</el-button>
               <el-button type="text" v-else-if="scope.row.status===2" @click="openEditor(scope.row,'edit')">审核失败</el-button>
               <el-button type="text" v-else @click="openEditor(scope.row,'edit')">未审核</el-button>
@@ -49,7 +44,7 @@
 
     <!-- 编辑Dialog -->
     <el-dialog :title="editorDialogTitle" :visible.sync="editorDialogVisible" width="50%">
-        <user-check-editor @complete="load" v-if="editorDialogVisible" :type="editorDialogType" :visible.sync="editorDialogVisible" :data="editData"></user-check-editor>
+        <user-check-editor @complete="search" v-if="editorDialogVisible" :type="editorDialogType" :visible.sync="editorDialogVisible" :data="editData"></user-check-editor>
     </el-dialog>
 
     <!-- 日志 Dialog -->
@@ -60,43 +55,33 @@
 </template>
 <script>
 
+import { tableConfig} from '../../../config/defaultData';
 import userCheckEditor from './child/userCheckEditor'
 import log from './child/log'
 
 export default {
   name: "user-check",
   components:{
-    userCheckEditor,
-    log
+    userCheckEditor,log
   },
   data() {
     return {
-      isLoad:false,
       queryParams: {
         title:""
       },
-      tableBody,
+      tableBody:tableConfig(tableHeader),
       editorDialogTitle:"验证审核",
       editorDialogType:"",
       editorDialogVisible:false,
       editData:{},
       logDialogShow:false,
       logId:""
-
-    };
+    }
   },
-  
+  created() {
+    this.search();
+  },
   methods: {
-    load() {
-      this.isLoad = true;
-      Promise.all([this.search()])
-        .then(resp => {
-          this.isLoad = false;
-        })
-        .catch(resp => {
-          this.isLoad = false;
-        });
-    },
     search() {
       this.tableBody.isLoad=true;
       let params={
@@ -120,11 +105,9 @@ export default {
     },
     openEditor(row,type){
       if(type==="edit"){
-        //审核验证
         this.editorDialogType="edit";
         this.editorDialogTitle="审核验证";
-      }else{        
-        //审核详情
+      }else{       
         this.editorDialogType="view";
         this.editorDialogTitle="审核详情";
       }
@@ -135,9 +118,6 @@ export default {
       this.logDialogShow=true;
       this.logId=row.user_id;
     }
-  },
-  created() {
-    this.load();
   },
 };
 
@@ -152,15 +132,6 @@ const tableHeader = [
   { prop: "admin_name", label: "执行账号" }
 ];
 
-
-const tableBody = {
-  isLoad:true,
-  header: tableHeader,
-  data: [],
-  curPage: 1, // 当前页数
-  pageSize: 20, // 页大小
-  countTotal: 0 // 页总数
-};
 </script>
 
 <style scoped>

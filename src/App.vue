@@ -1,14 +1,8 @@
 <template>
-  <div id="app"
-    v-loading="isLoad"
-    :element-loading-text="loadingText"
-    element-loading-spinner="el-icon-loading"
-    element-loading-background="rgba(0, 0, 0, 0.8)"
-  >
+  <div id="app" v-loading="isLoad" :element-loading-text="loadingText" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)">
     <el-header v-if="!$route.path.includes('login')" height="100px" class="top-header">
       <top-header></top-header>
     </el-header>
-
     <el-container class="top-main">
       <el-aside style="width:210px" v-if="!$route.path.includes('login')">
         <sheep-menu></sheep-menu>
@@ -23,21 +17,19 @@
 </template>
 
 <script>
-  import topHeader from './components/logic/topHeader.vue';
-  import menu from './components/logic/menu.vue';
+  import topHeader from './components/topHeader';
+  import menu from './components/menu';
 
-  import bus from './plugin/box_bus.js';
+  import bus from './plugin/box_bus';
   import {setRoutes} from "./util/setRoutes";
 
-  import {areaData,areaAPI} from './commonalityNet/area.js';
-
-  // import mixin from './components/mixin/mixin'
+  // import mixin from './components/mixin'
   export default {
     name: 'App',
     // mixins: [mixin],
     components: {
       topHeader,
-      'sheep-menu': menu
+      sheepMenu: menu
     },
     data(){
       return {
@@ -48,7 +40,6 @@
     mounted() {
       if(this.$route.path!=="/login"){
         let path = setRoutes();
-
         this.$router.replace({
           path: path
         })
@@ -63,14 +54,11 @@
       bus.$on('message',this.showMessage)
     },
     methods: {
-      // getAllMap(){
-      //   areaAPI.getAllMap()
-      // },
       loadingAnime(){
         this.isLoad = true;
       },
       updateLoadingText(text){
-        this.loadingText = text || '拼命加载中';
+        this.loadingText = text || this.loadingText;
       },
       unloadAnime(){
         this.isLoad = false;
@@ -112,23 +100,23 @@
 </script>
 
 <style>
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    height:100vh;
-  }
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height:100vh;
+}
 
-  .top-header {
-    background: linear-gradient(13deg, rgb(102,158,183), lightblue);
-    box-shadow: 0px 3px 25px rgb(102,158,183);
-    z-index: 1;
-    position: relative;
-  }
+.top-header {
+  background: linear-gradient(13deg, rgb(102,158,183), lightblue);
+  box-shadow: 0px 3px 25px rgb(102,158,183);
+  z-index: 1;
+  position: relative;
+}
 
-  .top-main {
-    height: calc(100vh - 100px);
-    padding-top: 20px;
-    box-sizing: border-box;
-  }
+.top-main {
+  height: calc(100vh - 100px);
+  padding-top: 10px;
+  box-sizing: border-box;
+}
 </style>

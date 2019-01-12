@@ -1,8 +1,8 @@
 {
-  "name": "small_sheep_credit_mgr",
+  "name": "totoro_bacl_manager",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "heningkang <heningkang@kuaifazs.com>",
+  "author": "wangshuai <wangshuai@kuaifazs.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",

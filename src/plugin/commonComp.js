@@ -1,16 +1,15 @@
-import photoWatcher from '../components/base/photoWatcher.vue';
-import autoBreadCrumb from '../components/logic/autoBreadCrumb.vue';
-import areaSelector from '../components/logic/areaSelector.vue';
+import photoWatcher from '../components/photoWatcher';
+import autoBreadCrumb from '../components/autoBreadCrumb';
+
 
 function install(Vue,Option){
-    const compList = [
+    const componentList = [
         photoWatcher,
-        autoBreadCrumb,
-        areaSelector
-    ]
-    compList.forEach(com=>{
-        Vue.component(com.name,com)
-    })
+        autoBreadCrumb
+    ];
+    componentList.map(component=>{
+        Vue.component(component.name,component)
+    });
 }
 
-export default install
+export default install;

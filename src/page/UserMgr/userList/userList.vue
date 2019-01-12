@@ -5,13 +5,13 @@
     </el-header>
     <el-main>
       <el-row>
-          <el-col :span="5" class="mr_15">
+          <el-col :span="5" class="mr15">
               <el-input v-model="searchBox.user_id" placeholder="用户ID" clearable></el-input>
           </el-col>
-          <el-col :span="5" class="mr_15">
+          <el-col :span="5" class="mr15">
               <el-input v-model="searchBox.mobile" placeholder="手机号" clearable></el-input>
           </el-col>
-          <el-col :span="5" class="mr_15">
+          <el-col :span="5" class="mr15">
             <el-input v-model="searchBox.real_name" placeholder="真实姓名" clearable></el-input>
           </el-col>
         <el-col :span="2">
@@ -31,7 +31,7 @@
           <template slot-scope="scope">
             <el-button  @click="tieUp(scope.row)" type="text" size="small">换绑手机</el-button>
             <el-button  @click="more(scope.row)" type="text" size="small">更多</el-button>
-            <!-- <el-button  @click="journal(scope.row)" type="text" size="small">日志</el-button> -->
+            <el-button  @click="journal(scope.row)" type="text" size="small">日志</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,24 +60,29 @@
       <more-editor :data="moreDialog.data" v-if="moreDialog.show" :visible.sync="moreDialog.show"></more-editor>
     </el-dialog>
     <!-- 日志Dialog -->
+    <el-dialog title="用户日志" :visible.sync="journalDialog.show" v-if="journalDialog.show" width="30%">
+      <journal :data="journalDialog.data" v-if="journalDialog.show" :visible.sync="journalDialog.show"></journal>
+    </el-dialog>
   </section>
 </template>
 <script>
-
-import banEditor from './child/banEditor.vue'
-import tieUpEditor from './child/tieUpEditor.vue'
-import moreEditor from './child/moreEditor.vue'
+import { tableConfig} from '../../../config/defaultData';
+import banEditor from './child/banEditor'
+import tieUpEditor from './child/tieUpEditor'
+import moreEditor from './child/moreEditor'
+import journal from './child/journal'
 
 export default {
   name: "userList",
   components:{
     banEditor,
     tieUpEditor,
-    moreEditor
+    moreEditor,
+    journal
   },
   data() {
     return {
-      tableBody,
+      tableBody:tableConfig(tableHeader),
       // 搜索控件选项
       searchBox: {
         user_id: "",
@@ -85,12 +90,10 @@ export default {
         real_name: "",
         user_id: ""
       },
-
       banDialog:{
         show:false,
         data:{}
       },
-
       tieUpDialog:{
         show:false,
         data:{}
@@ -98,14 +101,17 @@ export default {
       moreDialog:{
         show:false,
         data:{}
+      },
+      journalDialog:{
+        show:false,
+        data:{}
       }
-      
-      
     };
   },
   methods: {
     // 接口数据处理获取
     search() {
+      this.tableBody.isLoad=true;
       const params = {
         user_id: this.searchBox.user_id,
         mobile: this.searchBox.mobile,
@@ -113,16 +119,15 @@ export default {
         page: this.tableBody.curPage,
         limit: this.tableBody.pageSize
       };
-      this.$http.get(`${process.env.GUESSING_HOST_URL}/api/admin/user`, {params})
+      this.$http.get(`${process.env.GUESSING_HOST_URL}/api/admin/user_list`, {params})
         .then(resp => {
-          if (resp.status == 200) {
+          if (resp.data.success) {
             this.tableBody.isLoad=false;
             this.tableBody.data = resp.data.data.rows;
             this.tableBody.curPage = resp.data.data.pagenation.current;
             this.tableBody.countTotal = resp.data.data.pagenation.total;
           }
-        })
-        .catch(resp => {});
+        }).catch(resp => {});
     },
     //用户禁用(解禁)
     statusEdit(row){
@@ -141,7 +146,8 @@ export default {
     },
     //日志
     journal(row){
-      console.log(row)
+      this.journalDialog.show=true;
+      this.journalDialog.data=row;
     }
   },
   created() {
@@ -162,18 +168,7 @@ const tableHeader = [
   {prop:"is_banned",label:"状态"}
 ];
 
-const tableBody = {
-  isLoad:true,
-  header: tableHeader,
-  data: [],
-  curPage: 1, // 当前页数
-  pageSize: 20, // 页大小
-  countTotal: 0 // 页总数
-};
 </script>
 
 <style scoped>
-.mr_15{
-  margin-right:15px;
-}
 </style>

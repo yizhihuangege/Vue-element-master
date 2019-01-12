@@ -1,10 +1,7 @@
 import axios from 'axios';
 import bus from '../plugin/box_bus';
 
-import { TEST_URL, OFFICIAL_URL } from '../config/baseURL.js';
-
-const BASE_URL = location.href.includes('10.8.') ? TEST_URL : OFFICIAL_URL;
-
+const BASE_URL = process.env.GUESSING_HOST_URL
 
 // login成功后会手动设置一次token
 let instance = axios.create({
@@ -19,18 +16,11 @@ let instance = axios.create({
  * 拦截器
  */
 instance.interceptors.response.use(function (response) {
-    // Authorization若存在，那么就表示要更新token
-    if (response.headers.authorization && typeof response.data != 'string') {
-        localStorage.setItem('token', response.headers.authorization);
-        bus.$emit('updateToken');
-        return response;
-    } else if (typeof response.data == 'string' && response.data.includes('Unauthorized')) {
+    if(response.data.errors=="登录认证失败"){
         bus.$emit('gotoLogin')
         return Promise.reject(response)
     }
-
-    return response;
-
+    return response
 }, function (error) {
     if(error.response.status === 403){
         bus.$emit('noticePermission',error.response)
@@ -45,7 +35,7 @@ instance.interceptors.response.use(function (response) {
 
 
 function install(Vue, Option) {
-    Vue.prototype.$http = instance;
+    Vue.prototype.$http = instance
 }
 
-export { install, instance };
+export { install, instance }

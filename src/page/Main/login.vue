@@ -1,8 +1,5 @@
 <template>
-  <section 
-
-    class="login-container"
-  >
+  <section class="login-container">
     <h1 class="login-header">
       龙猫管理后台
       <h3>totoro mgr console</h3>
@@ -41,7 +38,6 @@
 import { setRoutes } from "../../util/setRoutes";
 import { formatDateAndTime } from "@/util/time.js";
 import bus from "@/plugin/box_bus.js";
-import {areaData,areaAPI} from '../../commonalityNet/area.js';
 
 export default {
   name: "login",
@@ -86,8 +82,7 @@ export default {
 
           bus.$emit("loadingAnime");
           bus.$emit("updateLoadingText", "正在验证登陆信息");
-          this.$http
-            .post(process.env.GUESSING_HOST_URL + "/api/admin/login", params)
+          this.$http.post(process.env.GUESSING_HOST_URL + "/api/admin/login", params)
             .then(resp => {
               if (resp.data.success) {
                 const data = resp.data.data;
@@ -99,8 +94,7 @@ export default {
                 this.$message.error(resp.data.errors);
                 bus.$emit("unLoadAnime");
               }
-            })
-            .catch(resp => {
+            }).catch(resp => {
               this.$message.error("登陆失败!");
               setTimeout(() => {
                 bus.$emit("unLoadAnime");
@@ -121,7 +115,6 @@ export default {
       this.$http.defaults.headers["Authorization"] = token;
       location = window.location.href.replace("/login", path);
       this.$router.replace(path);
-      //location.reload();
     },
     enter() {
       let path = localStorage.getItem("enterRoute",path);

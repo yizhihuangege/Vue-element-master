@@ -12,17 +12,17 @@
               <el-input v-model="searchBox.gameName" placeholder="游戏名称" clearable ></el-input>
           </el-col>
           <el-col :span="3" class="mr_r15">
-              <el-select v-model="searchBox.state" placeholder="状态" clearable >
+              <el-select v-model="searchBox.state" placeholder="状态" clearable @change="search">
                 <el-option v-for="(item,index) of status" :key="index" :value="item.value"  :label="item.label"></el-option>
               </el-select>
           </el-col>
           <el-col :span="3" class="mr_r15">
-            <el-select v-model="searchBox.salesVolume" placeholder="销量" clearable >
+            <el-select v-model="searchBox.salesVolume" placeholder="销量" clearable @change="search">
               <el-option v-for="(item,index) of sellNumSort" :key="index" :value="item.value"  :label="item.label"></el-option>
             </el-select>
           </el-col>
           <el-col :span="3">
-            <el-select v-model="searchBox.types" placeholder="类型" class="mr_r15" clearable >
+            <el-select v-model="searchBox.types" placeholder="类型" class="mr_r15" clearable @change="search">
               <el-option v-for="(item,index) of type" :key="index" :value="item.value"  :label="item.label"></el-option>
             </el-select>
           </el-col>
@@ -39,10 +39,10 @@
         <el-table :data="tableBody.data" v-loading="tableBody.isLoad">
           <el-table-column v-for="item of tableBody.header" :key="item.id" :label="item.label" :prop="item.prop">
             <template slot-scope="scope">
-              <img v-if="item.prop==='pics'" style="width: 100%" :src="scope.row.pics" alt="">
-              <span v-else-if="item.prop==='type'" >{{reType(scope.row[item.prop])}}</span>
-              <span v-else-if="item.prop==='mall_game'" >{{scope.row[item.prop].game_name}}</span>
-              <span v-else-if="item.prop==='status'" >{{scope.row[item.prop]===1?'已上架':'已下架'}}</span>
+              <img v-if="item.prop==='pics'" :src="scope.row.pics" @click="viewPicture(scope.row.pics)" style="width:100%;max-width:200px" :alt="scope.row.pics">
+              <span v-else-if="item.prop==='type'" >{{scope.row.type | reType}}</span>
+              <span v-else-if="item.prop==='mall_game'" >{{scope.row.mall_game.game_name}}</span>
+              <span v-else-if="item.prop==='status'" >{{scope.row.status===1?'已上架':'已下架'}}</span>
               <span v-else>{{scope.row[item.prop]}}</span>
             </template>
           </el-table-column>
@@ -81,10 +81,14 @@
             </el-row>
           </span>
       </el-dialog>
+      <!-- 单个图片查看器 -->
+      <photo-watcher :img="photoWatcher.img" :visible.sync="photoWatcher.visible"></photo-watcher>
     </section>
 </template>
 
 <script>
+
+import { tableConfig} from '../../../config/defaultData';
 import addCommodityList from "./child/addCommodityList";
 export default {
   name: "commodityList",
@@ -104,7 +108,7 @@ export default {
       status: status,
       type: type,
       sellNumSort: sellNumSort,
-      tableBody: tableBody,
+      tableBody: tableConfig(tableHeader,10),
       dialog: {
         title: "",
         addCommodity: false,
@@ -115,8 +119,17 @@ export default {
       },
       stockDialogShow: false,
       addStockNum: "",
-      rowId: ""
+      rowId: "",
+      photoWatcher:{
+        img:"",
+        visible:false
+      },
     };
+  },
+  filters:{
+    reType(val) {
+      return ["充值","上号","登记","游戏","通用"][val-1]
+    },
   },
   methods: {
     // 添加商品按钮
@@ -134,7 +147,7 @@ export default {
       this.dialog.addCommodityVisible = true;
     },
     // 接口数据处理获取
-    search(val) {
+    search() {
       this.tableBody.isLoad = true;
       let params = {
         status: this.searchBox.state,
@@ -142,19 +155,14 @@ export default {
         name: this.searchBox.commodityName,
         game_name: this.searchBox.gameName,
         sell_num_sort: this.searchBox.salesVolume,
-        page: this.tableBody.curPage
+        page: this.tableBody.curPage,
+        limit:this.tableBody.pageSize
       };
-      this.$http
-        .get(`${process.env.GUESSING_HOST_URL}/api/admin/goods/index`, {
-          params
-        })
-        .then(resp => {
+      this.$http.get(`${process.env.GUESSING_HOST_URL}/api/admin/goods/index`, {params}).then(resp => {
           if (resp.data.success) {
             this.tableBody.isLoad = false;
             this.tableBody.data = resp.data.data.data;
-            this.tableBody.curPage = resp.data.data.current_page;
             this.tableBody.countTotal = resp.data.data.total;
-            this.tableBody.pageSize = resp.data.data.per_page;
           }
         })
         .catch(resp => {});
@@ -265,9 +273,7 @@ export default {
         })
         .catch(_ => {});
     },
-    reType(val) {
-      return ["充值","上号","登记","游戏","通用"][val-1]
-    },
+    
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then(_ => {
@@ -300,7 +306,11 @@ export default {
           }
         })
         .catch(_ => {});
-    }
+    },
+     viewPicture(img) {
+      this.photoWatcher.img = img;
+      this.photoWatcher.visible = true;
+    },
   },
   created() {
     this.search();
@@ -330,14 +340,6 @@ const tableHeader = [
   { prop: "exchange_limit", label: "兑换上限（天/人）" }
 ];
 
-const tableBody = {
-  isLoad: true,
-  header: tableHeader,
-  data: [],
-  curPage: 1, // 当前页数
-  pageSize: 0, // 页大小
-  countTotal: 0 // 页总数
-};
 </script>
 
 <style scoped>

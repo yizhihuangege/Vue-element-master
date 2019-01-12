@@ -9,11 +9,11 @@
 
 
       <el-form-item label="参赛队伍" prop="teams">
-        <el-select style="width:20%" v-model="form.team_1.id" filterable clearable placeholder="请选择">
+        <el-select style="max-width:200px" v-model="form.team_1.id" filterable clearable placeholder="请选择">
           <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
           vs
-        <el-select style="width:20%" v-model="form.team_2.id" filterable clearable placeholder="请选择">
+        <el-select style="max-width:200px" v-model="form.team_2.id" filterable clearable placeholder="请选择">
           <el-option v-for="item in teams" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
@@ -22,8 +22,10 @@
 
       <el-form-item label="比赛名称" prop="match_name">
         <el-input v-model="form.match_name" placeholder="比赛名称" style="width:200px" clearable></el-input>
-        <el-checkbox v-model="hasliveUrl" style="margin-left:20px">添加直播地址</el-checkbox>
-        <el-input v-model="form.live_url" v-if="hasliveUrl" style="width:270px;margin-left:20px" placeholder="请输入直播地址" clearable></el-input>
+        <div style="margin-top:20px">
+          <el-checkbox v-model="hasliveUrl" style="margin-left:20px">添加直播地址</el-checkbox>
+          <el-input v-model="form.live_url" v-if="hasliveUrl" style="max-width:250px" placeholder="请输入直播地址" clearable></el-input>
+        </div>
       </el-form-item>
 
       <el-form-item label="开始时间" prop="start_time">

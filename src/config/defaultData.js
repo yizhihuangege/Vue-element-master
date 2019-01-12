@@ -1,15 +1,16 @@
-const tableBody = {
-    isLoading: false,
-    header: [],
-    data: [{}],
-    selectedRows: [],
-    curPage: 1, // 当前页数
-    pageSize: 10, // 页大小
-    countTotal: 0 // 页总数
-};
+//表格初始配置方法
+const tableConfig = (tableHeader=[],pageSize=20)=>{
+    return {
+        isLoad: false,
+        header: tableHeader,
+        data: [],
+        curPage: 1,
+        pageSize: pageSize,
+        countTotal: 0
+    };
+}
 
-
-
+// 时间快捷查询配置
 const timeRangeConfig = {
     shortcuts: [
         {
@@ -59,5 +60,5 @@ const timeRangeConfig = {
     ]
 };
 
-export { tableBody,timeRangeConfig }
+export { tableConfig,timeRangeConfig };
 

@@ -186,7 +186,7 @@ export default {
     },
     createFilter(queryString) {
         return (item) => {
-          return (item.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+          return item => item.value.toLowerCase().includes(queryString.toLowerCase())
         };
       },
     handleSelect(item) {

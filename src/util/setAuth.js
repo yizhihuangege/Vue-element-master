@@ -5,6 +5,7 @@
  * @param {Boolean} defaultRequireAuth
  */
 const setAuth = (routes, defaultRequireAuth = true) => {
+  
   routes = routes.map(route => {
     if (!route.meta) {
       route.meta = Object.assign({}, { requiresAuth: defaultRequireAuth })

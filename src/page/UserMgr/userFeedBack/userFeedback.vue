@@ -12,7 +12,7 @@
                 
                 <el-col :span="8">
                     <el-date-picker v-model="queryParams.timeRange" format="yyyy-MM-dd HH:mm:SS" value-format="yyyy-MM-dd HH:mm:SS" type="datetimerange" range-separator="至"
-                        start-placeholder="开始日期" end-placeholder="结束日期">
+                        start-placeholder="开始时间" end-placeholder="结束时间">
                     </el-date-picker>
                 </el-col>
                 <el-col :span="2">
@@ -27,9 +27,9 @@
           </template>
         </el-table-column>
         
-        <el-table-column label="备注">
+        <el-table-column label="操作">
             <template slot-scope="scope">
-                <el-button @click="remark(scope.row)" type="text" size="small">编辑</el-button>
+                <el-button @click="remark(scope.row)" type="text" size="small">备注</el-button>
             </template>
         </el-table-column>
 
@@ -60,15 +60,16 @@
   </section>
 </template>
 <script>
+import { tableConfig } from "../../../config/defaultData";
 export default {
   name: "user-feedback",
   data() {
     return {
+      tableBody:tableConfig(tableHeader),
       queryParams: {
         user_id: "",
         timeRange:[]
       },
-      tableBody,
       dialogVisible:false,
       remarks:"",
       editId:""
@@ -77,6 +78,7 @@ export default {
   methods: {
     // 接口数据处理获取
     search() {
+      this.tableBody.isLoad=true;
       let params = {
         page: this.tableBody.curPage,
         user_id: this.queryParams.user_id,
@@ -90,6 +92,7 @@ export default {
       this.$http.get(`${process.env.GUESSING_HOST_URL}/api/admin/feedback`, {params})
         .then(resp => {
           if (resp.data.success) {
+            this.tableBody.isLoad=true;
             let data = resp.data.data;
             this.tableBody.countTotal=data.pagenation.total;
             this.tableBody.data = data.rows;
@@ -137,13 +140,6 @@ const tableHeader = [
   {prop:"remarks",label:"备注"}
 ];
 
-const tableBody = {
-  header: tableHeader,
-  data: [],
-  curPage: 1, // 当前页数
-  pageSize: 20, // 页大小
-  countTotal: 0 // 页总数
-};
 </script>
 
 <style scoped>

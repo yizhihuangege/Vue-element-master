@@ -23,12 +23,13 @@
                     type="datetimerange" 
                     range-separator="至"
                     start-placeholder="开始时间" end-placeholder="结束时间"
-                    :default-time="['00:00:00', '23:59:59']">
+                    :default-time="['00:00:00', '23:59:59']"
+                    :picker-options="timeRangeConfig">
                     </el-date-picker>
           <el-button type="primary" @click="search">查询</el-button>
         </el-col>
       </el-row>
-      <el-table :data="tableBody.data">
+      <el-table :data="tableBody.data" v-loading="tableBody.isLoad">
         <el-table-column v-for="item of tableBody.header" :key="item.id" :label="item.label" :prop="item.prop">
           <template slot-scope="scope">
             <span v-if="item.prop=='reward_amount'" :class="reStyle(scope.row[item.prop])">
@@ -54,6 +55,8 @@
 </template>
 
 <script>
+import { tableConfig,timeRangeConfig} from '../../../config/defaultData';
+
 export default {
   name: "settlement",
   data() {
@@ -66,7 +69,8 @@ export default {
         time: [],
         guess_item:""
       },
-      tableBody,
+      tableBody:tableConfig(tableHeader),
+      timeRangeConfig,
       id:localStorage.guessId,
       guessName:localStorage.guessName
     };
@@ -86,6 +90,7 @@ export default {
     },
     // 接口数据处理获取
     search() {
+      this.tableBody.isLoad=true;
       let params = {
         guess_item_id:this.id,
         user_id:this.form.userId,
@@ -97,15 +102,10 @@ export default {
         params.begin_time=this.form.time[0];
         params.end_time=this.form.time[1];
       }
-      this.$http
-        .get(`${process.env.GUESSING_HOST_URL}/api/admin/user_tally`, {
-          params
-        })
-        .then(resp => {
+      this.$http.get(`${process.env.GUESSING_HOST_URL}/api/admin/user_tally`, {params}).then(resp => {
           if (resp.data.success) {
-            this.tableBody.curPage = resp.data.data.current_page;
+            this.tableBody.isLoad=false;
             this.tableBody.countTotal = resp.data.data.total;
-            this.tableBody.pageSize = resp.data.data.per_page;
             this.tableBody.data = resp.data.data.data;
           }
         })
@@ -136,14 +136,14 @@ const tableHeader = [
   { prop: "reward_amount", label: "获得M币" }
 ];
 
-const tableBody = {
-  isLoad: false,
-  header: tableHeader,
-  data: [],
-  curPage: 1, // 当前页数
-  pageSize: 20, // 页大小
-  countTotal: 0 // 页总数
-};
+// const tableBody = {
+//   isLoad: false,
+//   header: tableHeader,
+//   data: [],
+//   curPage: 1, // 当前页数
+//   pageSize: 20, // 页大小
+//   countTotal: 0 // 页总数
+// };
 </script>
 
 <style scoped>
