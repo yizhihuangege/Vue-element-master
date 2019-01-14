@@ -31,11 +31,7 @@
             </el-form-item>
 
             
-            <el-form-item label="皮肤价格">
-                <!-- <el-input-number :precision="2" v-model="form.price"></el-input-number>
-                <div style="color:#999" v-if="form.price>0">价值猫币：{{ form.price*1000 }}</div> -->
-                {{ curPrice }}
-            </el-form-item>
+            <el-form-item label="皮肤价格">{{ curPrice }}</el-form-item>
 
 
         </el-form>
@@ -61,7 +57,6 @@ export default {
       form: {
           name:"",
           avatar:"",
-          // price:"",
           tsy_goods_id:"",
           status:""
       }
@@ -71,6 +66,7 @@ export default {
     this.getTsyGameList();
     if(this.type==="edit"){
       this.form=JSON.parse(JSON.stringify(this.data));
+      this.curPrice=this.form.price;
     }
   },
   methods: {
@@ -111,7 +107,6 @@ export default {
       return item => item.value.toLowerCase().includes(queryString.toLowerCase())
     },
     handleSelect(item) {
-      // console.log(item)
       this.curPrice=item.price;
       this.form.tsy_goods_id=item.id;
     },

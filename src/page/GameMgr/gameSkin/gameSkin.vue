@@ -122,7 +122,7 @@ export default {
       this.editorDialog.type="add";
       this.editorDialog.data={}
       if (row.id) {
-        this.editorDialog.title = "编辑编辑";
+        this.editorDialog.title = "编辑皮肤";
         this.editorDialog.type = "edit";
         this.editorDialog.data = row;
       }
