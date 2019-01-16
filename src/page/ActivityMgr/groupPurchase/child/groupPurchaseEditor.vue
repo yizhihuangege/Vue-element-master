@@ -37,6 +37,12 @@
                 </el-select>
             </el-form-item>
 
+            <el-form-item label="每份价值" prop="per_mcoin">
+                <el-select clearable v-model="form.per_mcoin">
+                    <el-option v-for="(item,index) in perOption" :key="index" :label="item.label" :value="item.value"></el-option>
+                </el-select>
+            </el-form-item>
+
             <el-form-item label="状态" prop="status">
                 <el-radio v-model="form.status" :label="1">上线</el-radio>
                 <el-radio v-model="form.status" :label="2">下线</el-radio>
@@ -59,7 +65,7 @@ export default {
             rules,
             skinOption:[],
             selectedSkin:{},
-            roundOption,
+            roundOption,perOption,
             form:{
                 game_hero_name:"",
                 game_hero_id:"",
@@ -68,8 +74,8 @@ export default {
                 price:"",
                 round:"",
                 status:1,
+                per_mcoin:"",
             },
-
             related_id:"",           // 关联淘手游商品ID
         }
     },
@@ -106,6 +112,7 @@ export default {
                 this.form.skin_id="";
                 this.form.skin_avatar="";
                 this.form.price="";
+                this.form.per_mcoin="";
             }
             this.searchHero(queryString,(data)=>{
                 var lists =data.map(d=>{
@@ -129,6 +136,7 @@ export default {
             if(!id){
                 this.form.skin_avatar="";
                 this.form.price="";
+                this.form.per_mcoin="";
                 return;
             }
             let selectedItem=this.skinOption.filter(item=>item.id===id);
@@ -155,6 +163,7 @@ export default {
                             price:Math.ceil(this.form.price),
                             status:this.form.status,
                             round:this.form.round,
+                            per_mcoin:this.form.per_mcoin,
                         }
 
                     if(this.type==="edit"){
@@ -180,6 +189,13 @@ export default {
     },
 }
 
+const perOption=[
+    { label:"1000",value:1000 },
+    { label:"2000",value:2000 },
+    { label:"3000",value:3000 },
+    { label:"4000",value:4000 },
+    { label:"5000",value:5000 },
+]
 
 const roundOption=[
     { label:"0:00",value:0 },

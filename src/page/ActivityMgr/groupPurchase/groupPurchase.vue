@@ -149,12 +149,13 @@ const statusOption=[
 ]
 
 const tableHeader = [
-//   { prop: "id", label: "排序" },
+  { prop: "id", label: "ID" },
   { prop: "game_hero_name", label: "所属英雄" },
   { prop: "skin_name", label: "皮肤名称"},
   { prop: "skin_avatar", label: "图片展示" },
-  { prop: "price", label: "皮肤价值" },
+  { prop: "price", label: "皮肤价值(元)" },
   { prop: "round", label: "上线轮次" },
+  { prop: "per_mcoin", label: "每份价值(M币)" },
   { prop: "group_total_cash", label: "已拼购现金" },
   { prop: "group_total_mcoin", label: "已拼购猫币" },
   { prop: "status", label: "上线状态" },
