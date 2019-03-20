@@ -16,20 +16,20 @@ let instance = axios.create({
  * 拦截器
  */
 instance.interceptors.response.use(function (response) {
-    if(response.data.errors=="登录认证失败"){
-        bus.$emit('gotoLogin')
-        return Promise.reject(response)
-    }
+//     if(response.data.errors=="登录认证失败"){
+//         bus.$emit('gotoLogin')
+//         return Promise.reject(response)
+//     }
     return response
 }, function (error) {
-    if(error.response.status === 403){
-        bus.$emit('noticePermission',error.response)
-    }else if (error.response.headers.authorization && error.response.status !== 401) {
-        localStorage.setItem('token', response.headers.authorization);
-        bus.$emit('updateToken');
-    } else if (error.response.status === 401) {
-        bus.$emit('gotoLogin')
-    }
+//     if(error.response.status === 403){
+//         bus.$emit('noticePermission',error.response)
+//     }else if (error.response.headers.authorization && error.response.status !== 401) {
+//         localStorage.setItem('token', response.headers.authorization);
+//         bus.$emit('updateToken');
+//     } else if (error.response.status === 401) {
+//         bus.$emit('gotoLogin')
+//     }
     return Promise.reject(error);
 })
 
